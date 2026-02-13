@@ -164,10 +164,10 @@ button {
 
 </div>
 
-<!-- use mp3 for better mobile support -->
-<audio id="bgMusic" loop>
-  <source src="music.mp4" type="audio/mpeg">
-</audio>
+<!-- Hidden video element for MP4 audio -->
+<video id="bgMusic" loop playsinline style="display:none;">
+  <source src="music.mp4" type="video/mp4">
+</video>
 
 <script>
 const openBtn = document.getElementById("openBtn");
@@ -200,16 +200,15 @@ noBtn.onclick = () => {
   yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
 };
 
-// play audio after user gesture
+// play MP4 as audio after user gesture
 yesBtn.onclick = () => {
   screen2.classList.remove("active");
   screen3.classList.add("active");
   loader.style.opacity = "1";
 
-  if(bgMusic.paused) {
-    bgMusic.volume = 1; // set full volume immediately for mobile
-    bgMusic.play().catch(()=>{}); 
-  }
+  // Unmute and play MP4
+  bgMusic.muted = false;
+  bgMusic.play().catch(err => console.log("Audio error:", err));
 
   setTimeout(() => {
     screen3.classList.remove("active");
