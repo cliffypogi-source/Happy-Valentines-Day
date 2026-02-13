@@ -98,13 +98,12 @@ button {
 }
 
 .finalText {
-  font-size: 14px; /* smaller font for mobile */
+  font-size: 14px; /* mobile-friendly */
   line-height: 1.5;
   margin-top: 12px;
   opacity: 0;
   font-family: 'Poppins', sans-serif;
-  word-break: break-word; /* ensures no horizontal overflow */
-  /* no scroll */
+  word-break: break-word;
 }
 
 .particle, .flower {
@@ -165,8 +164,9 @@ button {
 
 </div>
 
+<!-- use mp3 for better mobile support -->
 <audio id="bgMusic" loop>
-  <source src="music.mp4" type="audio/mpeg">
+  <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -200,23 +200,16 @@ noBtn.onclick = () => {
   yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
 };
 
+// play audio after user gesture
 yesBtn.onclick = () => {
-
   screen2.classList.remove("active");
   screen3.classList.add("active");
   loader.style.opacity = "1";
 
-  bgMusic.volume = 0;
-  bgMusic.play().catch(()=>{});
-  let volume = 0;
-  const fadeAudio = setInterval(()=>{
-    if(volume < 1){
-      volume += 0.02;
-      bgMusic.volume = volume;
-    } else {
-      clearInterval(fadeAudio);
-    }
-  }, 100);
+  if(bgMusic.paused) {
+    bgMusic.volume = 1; // set full volume immediately for mobile
+    bgMusic.play().catch(()=>{}); 
+  }
 
   setTimeout(() => {
     screen3.classList.remove("active");
