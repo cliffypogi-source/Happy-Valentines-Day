@@ -1,20 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Valentine's Day</title>
-    <style>
-        #finalText {
-            max-height: 300px; /* Adjust as needed */
-            overflow-y: scroll;
-            padding: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #8e2de2, #4a00e0);
+  overflow: hidden;
+  transition: background 1s ease;
+}
+
+.card {
+  width: 90%;
+  max-width: 380px;
+  padding: 40px 30px;
+  border-radius: 25px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.05));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+h1 {
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+
+.buttons {
+  position: relative;
+  height: 150px;
+}
+
+button {
+  border: none;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#openBtn {
+  background: white;
+  color: #4a00e0;
+  font-weight: 600;
+}
+
+#yesBtn {
+  background: white;
+  color: #4a00e0;
+  font-weight: 600;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#noBtn {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  position: absolute;
+  left: 65%;
+  top: 65%;
+}
+
+.loader {
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.finalTitle {
+  font-family: 'Great Vibes', cursive;
+  font-size: 26px;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.finalText {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-top: 15px;
+  opacity: 0;
+  font-family: 'Poppins', sans-serif;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.particle, .flower {
+  position: fixed;
+  bottom: -10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: floatUp linear forwards;
+  pointer-events: none;
+}
+
+.particle {
+  background: rgba(255,255,255,0.6);
+}
+
+.flower {
+  font-size: 20px;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+  to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+}
+</style>
 </head>
+
 <body>
-    <div id="finalText">
-        <!-- Your existing content here -->
-    </div>
+
+<div class="card">
+
+<div id="screen1" class="screen active">
+  <h1>Happy Valentine's Day 💗</h1>
+  <button id="openBtn">Open Message</button>
+</div>
+
+<div id="screen2" class="screen">
+  <h1>Do you want to open the message?</h1>
+  <div class="buttons">
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+  </div>
+</div>
+
+<div id="screen3" class="screen">
+  <div class="loader" id="loader">Preparing something special...</div>
+</div>
+
+<div id="screen4" class="screen">
+  <div class="finalTitle" id="finalTitle">
+    Just One Thing I've Been Meaning To Say
+  </div>
+  <div class="finalText" id="finalText"></div>
+</div>
+
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="music.mp4" type="audio/mpeg">
+</audio>
+
+<script>
+const openBtn = document.getElementById("openBtn");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const bgMusic = document.getElementById("bgMusic");
+
+const screen1 = document.getElementById("screen1");
+const screen2 = document.getElementById("screen2");
+const screen3 = document.getElementById("screen3");
+const screen4 = document.getElementById("screen4");
+
+const loader = document.getElementById("loader");
+const finalTitle = document.getElementById("finalTitle");
+const finalText = document.getElementById("finalText");
+
+let yesScale = 1;
+
+openBtn.onclick = () => {
+  screen1.classList.remove("active");
+  screen2.classList.add("active");
+};
+
+noBtn.onclick = () => {
+  const range = 100;
+  const x = (Math.random()*range)-range/2;
+  const y = (Math.random()*range)-range/2;
+  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+  yesScale += 0.2;
+  yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
+};
+
+yesBtn.onclick = () => {
+
+  screen2.classList.remove("active");
+  screen3.classList.add("active");
+  loader.style.opacity = "1";
+
+  bgMusic.volume = 0;
+  bgMusic.play().catch(()=>{});
+  let volume = 0;
+  const fadeAudio = setInterval(()=>{
+    if(volume < 1){
+      volume += 0.02;
+      bgMusic.volume = volume;
+    } else {
+      clearInterval(fadeAudio);
+    }
+  }, 100);
+
+  setTimeout(() => {
+    screen3.classList.remove("active");
+    screen4.classList.add("active");
+
+    document.body.style.background =
+      "linear-gradient(135deg, #ff416c, #ff4b2b)";
+
+    finalTitle.style.opacity = "1";
+
+    const message = `Happy Valentine's Day, Honey Kaye. I just want to remind you how much you truly mean to me. Meeting you has been one of the best things that has ever happened in my life. You ar[...]
+
+Every laugh we share and every moment we spend together means more to me than I can explain. I treasure them all because they remind me how special you are to me.
+
+My love for you is sincere and comes from the deepest part of my heart. I may be a little cringe or needy sometimes, but my feelings for you are real and constant. I'm not trying to force you to fee[...]
+
+No matter what happens, I'm grateful for you, and I hope you always remember that someone loves you deeply and sincerely.`;
+
+    let i = 0;
+    finalText.style.opacity = "1";
+    finalText.innerHTML = "";
+    const typeInterval = setInterval(()=>{
+      finalText.innerHTML += message[i];
+      i++;
+      if(i >= message.length) clearInterval(typeInterval);
+    }, 50);
+
+  }, 2000);
+};
+
+setInterval(() => {
+  const p = document.createElement("div");
+  p.className = "particle";
+  p.style.left = Math.random()*100+"vw";
+  p.style.animationDuration = (Math.random()*5+5)+"s";
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),8000);
+},400);
+
+const flowers = ["🌸","🌺","💮","🌷"];
+setInterval(() => {
+  const f = document.createElement("div");
+  f.className = "flower";
+  f.textContent = flowers[Math.floor(Math.random()*flowers.length)];
+  f.style.left = Math.random()*100+"vw";
+  f.style.fontSize = (Math.random()*20+15)+"px";
+  f.style.animationDuration = (Math.random()*5+7)+"s";
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(),9000);
+},600);
+</script>
+
 </body>
 </html>
